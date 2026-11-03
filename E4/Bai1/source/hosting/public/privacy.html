@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chính sách quyền riêng tư – UTH Todo</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">✓</div>
+      <a class="brand" href="/">UTH <span>Todo</span></a>
+    </header>
+
+    <div class="card">
+      <h1>Chính sách quyền riêng tư</h1>
+      <p class="meta">Cập nhật lần cuối: 03/11/2026</p>
+      <p>UTH Todo là ứng dụng được xây dựng cho mục đích học tập trong môn Lập trình thiết bị di động
+        tại Trường Đại học Giao thông vận tải TP.HCM. Trang này giải thích ứng dụng thu thập những dữ liệu nào,
+        dùng để làm gì và bạn có quyền gì với dữ liệu của mình.</p>
+
+      <h2>1. Thông tin tài khoản</h2>
+      <p>Khi bạn đăng nhập bằng Google, Microsoft, GitHub, Facebook, X (Twitter), Yahoo, email hoặc số điện thoại,
+        ứng dụng nhận từ dịch vụ đó (thông qua Firebase Authentication):</p>
+      <ul>
+        <li>Mã định danh người dùng (UID) do Firebase tạo ra;</li>
+        <li>Tên hiển thị, địa chỉ email hoặc số điện thoại (tuỳ cách đăng nhập);</li>
+        <li>Cách bạn đã đăng nhập.</li>
+      </ul>
+      <p>Ứng dụng <strong>không</strong> nhận và không lưu mật khẩu của các tài khoản mạng xã hội.
+        Ở chế độ “Dùng thử không cần tài khoản”, ứng dụng chỉ tạo một tài khoản ẩn danh.</p>
+
+      <h2>2. Dữ liệu công việc</h2>
+      <p>Công việc bạn tạo (tên việc, nhóm, giờ, ngày, trạng thái hoàn thành) được lưu trên Cloud Firestore,
+        gắn với UID của bạn. Chỉ tài khoản của bạn mới đọc và sửa được dữ liệu này.</p>
+
+      <h2>3. Thông báo</h2>
+      <p>Để gửi thông báo nhắc việc, ứng dụng lưu mã thiết bị Firebase Cloud Messaging (FCM token) vào hồ sơ của bạn.
+        Bạn có thể tắt thông báo bất cứ lúc nào trong phần Cài đặt của điện thoại.</p>
+
+      <h2>4. Thống kê, báo lỗi và quảng cáo</h2>
+      <ul>
+        <li><strong>Google Analytics for Firebase</strong>: ghi nhận các thao tác như mở màn hình, thêm hoặc hoàn thành công việc để cải thiện ứng dụng.</li>
+        <li><strong>Firebase Crashlytics</strong> và <strong>Performance Monitoring</strong>: thu thập thông tin kỹ thuật khi ứng dụng gặp lỗi hoặc chạy chậm (loại máy, phiên bản Android, nhật ký lỗi).</li>
+        <li><strong>Google AdMob</strong>: hiển thị quảng cáo. AdMob có thể dùng mã quảng cáo của thiết bị theo
+          <a href="https://policies.google.com/technologies/ads?hl=vi" target="_blank" rel="noopener">chính sách của Google</a>.</li>
+      </ul>
+
+      <h2>5. Chia sẻ dữ liệu</h2>
+      <p>Dữ liệu chỉ được xử lý bởi các dịch vụ Google Firebase và AdMob nêu trên để ứng dụng hoạt động.
+        Chúng tôi không bán và không chia sẻ dữ liệu của bạn cho bên thứ ba nào khác.</p>
+
+      <h2>6. Quyền của bạn</h2>
+      <ul>
+        <li>Sửa hoặc xoá bất kỳ công việc nào ngay trong ứng dụng.</li>
+        <li>Đăng xuất bất cứ lúc nào; tài khoản dùng thử sẽ bị xoá khi đăng xuất.</li>
+        <li>Yêu cầu xoá toàn bộ tài khoản và dữ liệu bằng cách liên hệ nhóm phát triển qua lớp học phần.</li>
+      </ul>
+
+      <h2>7. Thay đổi chính sách</h2>
+      <p>Chính sách có thể được cập nhật khi ứng dụng thêm tính năng. Ngày cập nhật mới nhất luôn ghi ở đầu trang.</p>
+
+      <div class="btns">
+        <a class="btn" href="/terms">Xem Điều khoản sử dụng</a>
+        <a class="btn" href="/">Về trang chủ</a>
+      </div>
+    </div>
+    <footer>UTH Todo · Đồ án học tập – UTH</footer>
+  </div>
+</body>
+</html>

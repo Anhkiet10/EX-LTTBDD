@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">UTH Todo</string>
+
+    <!-- Facebook Login: lấy trên developers.facebook.com → App của bạn -->
+    <!-- App settings → Basic → App ID -->
+    <string name="facebook_app_id" translatable="false">1879787799691754</string>
+    <!-- "fb" + App ID, vd: fb1234567890 -->
+    <string name="fb_login_protocol_scheme" translatable="false">fb1879787799691754</string>
+    <!-- App settings → Advanced → Security → Client token -->
+    <string name="facebook_client_token" translatable="false">7eb65c96c6ba60cf3970d9e7cd561986</string>
+</resources>

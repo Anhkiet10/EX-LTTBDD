@@ -1,413 +1,257 @@
+
 package com.example.bai1
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
-import coil3.compose.AsyncImage
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.bai1.ui.theme.Bai1Theme
+import androidx.navigation.navArgument
+
+private val Blue = Color(0xFF2196E8)
+private val LightBlue = Color(0xFFB9E0F8)
+
+private val quotes = listOf(
+    "The only way to do great work is to love what you do.",
+    "Success is the sum of small efforts.",
+    "Believe you can and you're halfway there.",
+    "It always seems impossible until it's done.",
+    "Great things take time.",
+    "1tr dòng sức mạnh"
+)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContent {
-            Bai1Theme {
+            MaterialTheme {
                 AppNavigation()
             }
         }
     }
 }
 
-// Màu dùng trong giao diện
-val TitleBlue = Color(0xFF2196F3)
-val CardBlue = Color(0xFFBBDEFB)
-val CardPink = Color(0xFFF8B4B4)
-val BrownColor = Color(0xFFC77D22)
-
-
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "list") {
-        composable("list") {
-            UIComponentsListScreen(navController)
-        }
-        composable("text_detail") {
-            TextDetailScreen(navController)
-        }
-        composable("image_detail") {
-            ImageDetailScreen(navController)
-        }
-        composable("textfield_detail") {
-            TextFieldDetailScreen(navController)
-        }
-        composable("row_detail") {
-            RowLayoutScreen(navController)
-        }
-        composable("password_detail") {
-            PasswordDetailScreen(navController)
-        }
-        composable("column_detail") {
-            ColumnLayoutScreen(navController)
-        }
-        // Màn hình mới sau này thì thêm tiếp ở đây, ví dụ:
-        // composable("image_detail") { ImageDetailScreen(navController) }
-    }
-}
-
-
-@Composable
-fun UIComponentsListScreen(navController: NavHostController) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        UIComponentsList(
-            modifier = Modifier.padding(innerPadding),
-            onTextClick = { navController.navigate("text_detail") },
-            onImageClick = { navController.navigate("image_detail") },
-            onTextFieldClick = { navController.navigate("textfield_detail") },
-            onRowClick = { navController.navigate("row_detail") },
-            onPasswordClick = { navController.navigate("password_detail") },
-            onColumnClick = { navController.navigate("column_detail") }
-        )
-    }
-}
-
-@Composable
-fun UIComponentsList(
-    modifier: Modifier = Modifier,
-    onTextClick: () -> Unit = {},
-    onImageClick: () -> Unit = {},
-    onTextFieldClick: () -> Unit = {},
-    onRowClick: () -> Unit = {},
-    onPasswordClick: () -> Unit = {},
-    onColumnClick: () -> Unit = {}
-) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    NavHost(
+        navController = navController,
+        startDestination = "root"
     ) {
+        // Trang 1
+        composable("root") {
+            RootScreen(
+                onPush = {
+                    navController.navigate("list")
+                }
+            )
+        }
+
+        // Trang 2
+        composable("list") {
+            ListScreen(
+                onBack = {
+                    navController.popBackStack()
+                },
+                onSelect = { index ->
+                    navController.navigate("detail/$index")
+                }
+            )
+        }
+
+        // Trang 3
+        composable(
+            route = "detail/{index}",
+            arguments = listOf(
+                navArgument("index") {
+                    type = NavType.IntType
+                }
+            )
+        ) { entry ->
+            val index = entry.arguments?.getInt("index") ?: 0
+
+            DetailScreen(
+                quote = quotes.getOrElse(index) {
+                    quotes[0]
+                },
+                onBackToRoot = {
+                    navController.navigate("root") {
+                        popUpTo("root") {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+    }
+}
+
+
+@Composable
+fun RootScreen(onPush: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Box(
+            modifier = Modifier.size(130.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.uth),
+                contentDescription = "Logo UTH",
+                modifier = Modifier.size(130.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
         Text(
-            text = "UI Components List",
-            color = TitleBlue,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
+            text = "Navigation",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold
         )
-
-        SectionTitle("Display")
-        ComponentCard("Text", "Displays text", onClick = onTextClick)   // (MỚI) bấm để chuyển màn
-        ComponentCard("Image", "Displays an image", onClick = onImageClick)
-
-        SectionTitle("Input")
-        ComponentCard("TextField", "Input field for text", onClick = onTextFieldClick)
-        ComponentCard("PasswordField", "Input field for passwords", onClick = onPasswordClick)
-
-        SectionTitle("Layout")
-        ComponentCard("Column", "Arranges elements vertically", onClick = onColumnClick)
-        ComponentCard("Row", "Arranges elements horizontally", onClick = onRowClick)
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Navigation helps you move between " +
+                    "different screens in your application.",
+            fontSize = 14.sp,
+            color = Color.Gray,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(64.dp))
+
+        Button(
+            onClick = onPush,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Blue
+            )
+        ) {
+            Text("PUSH")
+        }
     }
 }
 
-@Composable
-fun SectionTitle(title: String) {
-    Text(
-        text = title,
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Medium,
-        modifier = Modifier.padding(top = 8.dp)
-    )
-}
 
 @Composable
-fun ComponentCard(
-    title: String,
-    description: String,
-    backgroundColor: Color = CardBlue,
-    onClick: () -> Unit = {}
+fun ListScreen(
+    onBack: () -> Unit,
+    onSelect: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .background(backgroundColor, RoundedCornerShape(12.dp))
-            .clickable { onClick() }
-            .padding(16.dp)
+            .fillMaxSize()
+            .background(Color.White)
     ) {
-        Text(text = title, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-        Text(text = description, fontSize = 15.sp)
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TextDetailScreen(navController: NavHostController) {
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text("Text Detail", color = TitleBlue, fontWeight = FontWeight.Bold)
-                },
-                navigationIcon = {
-                    TextButton(onClick = { navController.popBackStack() }) {
-                        Text("<", fontSize = 24.sp, color = TitleBlue)
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Column(
+        Row(
             modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = buildAnnotatedString {
-                    append("The ")
-
-                    withStyle(SpanStyle(textDecoration = TextDecoration.LineThrough)) {
-                        append("quick")
-                    }
-                    append(" ")
-
-                    withStyle(SpanStyle(color = BrownColor, fontSize = 44.sp)) {
-                        append("Brown")
-                    }
-                    append("\nfox ")
-
-                    withStyle(SpanStyle(letterSpacing = 8.sp)) {
-                        append("jumps")
-                    }
-                    append(" ")
-
-                    withStyle(
-                        SpanStyle(fontWeight = FontWeight.Bold, fontStyle = FontStyle.Italic)
-                    ) {
-                        append("over")
-                    }
-                    append("\n")
-
-                    withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
-                        append("the")
-                    }
-                    append(" ")
-
-                    withStyle(
-                        SpanStyle(fontFamily = FontFamily.Cursive, fontStyle = FontStyle.Italic)
-                    ) {
-                        append("lazy")
-                    }
-                    append(" dog.")
-                },
-                fontSize = 32.sp,
-                lineHeight = 52.sp
-            )
-
-            HorizontalDivider(modifier = Modifier.padding(top = 24.dp))
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DetailTopBar(title: String, navController: NavHostController) {
-    CenterAlignedTopAppBar(
-        title = { Text(title, color = TitleBlue, fontWeight = FontWeight.Bold) },
-        navigationIcon = {
-            TextButton(onClick = { navController.popBackStack() }) {
-                Text("<", fontSize = 24.sp, color = TitleBlue)
-            }
-        }
-    )
-}
-
-
-const val IMAGE_URL =
-    "https://giaothongvantaitphcm.edu.vn/wp-content/uploads/2025/01/Logo-GTVT.png"
-
-@Composable
-fun ImageDetailScreen(navController: NavHostController) {
-    val uriHandler = LocalUriHandler.current
-
-    Scaffold(
-        topBar = { DetailTopBar("Images", navController) }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-
-            AsyncImage(
-                model = IMAGE_URL,
-                contentDescription = "Ảnh từ internet",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(16.dp))
-            )
-            Text(
-                text = IMAGE_URL,
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier.clickable { uriHandler.openUri(IMAGE_URL) }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-
-            AsyncImage(
-                model = R.drawable.uth,
-                contentDescription = "Ảnh trong app",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(16.dp))
-            )
-            Text(text = "In app", fontSize = 15.sp, color = Color.DarkGray)
-        }
-    }
-}
-
-
-@Composable
-fun TextFieldDetailScreen(navController: NavHostController) {
-    // Biến lưu nội dung người dùng nhập
-    var text by remember { mutableStateOf("") }
-
-    Scaffold(
-        topBar = { DetailTopBar("TextField", navController) }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(horizontal = 32.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            OutlinedTextField(
-                value = text,
-                onValueChange = { text = it },
-                placeholder = { Text("Thông tin nhập", color = Color.Gray) },
-                shape = RoundedCornerShape(16.dp),
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-
-            Text(
-                text = text.ifEmpty { "Tự động cập nhật dữ liệu theo textfield" },
-                color = Color(0xFFD32F2F),
-                fontSize = 15.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-
-val LightBlueBox = Color(0xFFA3BFF0)
-val DarkBlueBox = Color(0xFF5588EE)
-val RowBackground = Color(0xFFF2F3F5)
-
-@Composable
-fun RowLayoutScreen(navController: NavHostController) {
-    Scaffold(
-        topBar = { DetailTopBar("Row Layout", navController) }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            IconButton(
+                onClick = { onBack() }
+            ) {
+                Text(
+                    text = "❮",
+                    color = Blue,
+                    fontSize = 24.sp
+                )
+            }
 
-            repeat(4) {
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                text = "LazyColumn",
+                color = Blue,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.width(24.dp))
+        }
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(12.dp),
+            verticalArrangement = Arrangement.spacedBy(25.dp)
+        ) {
+            itemsIndexed(quotes) { index, quote ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(RowBackground, RoundedCornerShape(12.dp))
-                        .padding(10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        .background(
+                            LightBlue,
+                            RoundedCornerShape(10.dp)
+                        )
+                        .clickable {
+                            onSelect(index)
+                        }
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    ColorBox(LightBlueBox, Modifier.weight(1f))
-                    ColorBox(DarkBlueBox, Modifier.weight(1f))
-                    ColorBox(LightBlueBox, Modifier.weight(1f))
+                    Text(
+                        text = "${index + 1} | $quote",
+                        modifier = Modifier.weight(1f),
+                        fontSize = 20.sp,
+                        color = Color.DarkGray
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .background(
+                                Color.Black,
+                                RoundedCornerShape(8.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "›",
+                            fontSize = 32.sp,
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }
@@ -416,98 +260,105 @@ fun RowLayoutScreen(navController: NavHostController) {
 
 
 @Composable
-fun PasswordDetailScreen(navController: NavHostController) {
-    var password by remember { mutableStateOf("") }
-    var showPassword by remember { mutableStateOf(false) }   // true = hiện mật khẩu
-
-    Scaffold(
-        topBar = { DetailTopBar("PasswordField", navController) }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(horizontal = 32.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+fun DetailScreen(
+    quote: String,
+    onBackToRoot: () -> Unit,
+    onBack: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                placeholder = { Text("Nhập mật khẩu", color = Color.Gray) },
-                shape = RoundedCornerShape(16.dp),
-                singleLine = true,
+            IconButton(
+                onClick = { onBack() }
+            ) {
+                Text(
+                    text = "<",
+                    color = Blue,
+                    fontSize = 24.sp
+                )
+            }
 
-                visualTransformation = if (showPassword) VisualTransformation.None
-                else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                trailingIcon = {
-                    TextButton(onClick = { showPassword = !showPassword }) {
-                        Text(if (showPassword) "Ẩn" else "Hiện", color = TitleBlue)
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = if (password.isEmpty()) "Mật khẩu sẽ được ẩn khi nhập"
-                else "Độ dài mật khẩu: ${password.length} ký tự",
-                color = Color(0xFFD32F2F),
-                fontSize = 15.sp,
-                textAlign = TextAlign.Center
+                text = "Detail",
+                color = Blue,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
             )
+
+            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.width(24.dp))
         }
-    }
-}
 
+        Spacer(modifier = Modifier.height(32.dp))
 
-@Composable
-fun ColumnLayoutScreen(navController: NavHostController) {
-    Scaffold(
-        topBar = { DetailTopBar("Column Layout", navController) }
-    ) { innerPadding ->
-        // Row chứa 3 cột đặt cạnh nhau
-        Row(
+        Text(
+            text = "\"$quote\"",
+            fontSize = 16.sp,
+            textAlign = TextAlign.Center,
+            color = Color.DarkGray
+        )
+
+        Spacer(modifier = Modifier.height(28.dp))
+
+        Box(
             modifier = Modifier
-                .padding(innerPadding)
                 .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                .height(330.dp)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFB4E7FA),
+                            Color(0xFF39A5ED)
+                        )
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .padding(20.dp),
+            contentAlignment = Alignment.Center
         ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "\"$quote\"",
+                    fontSize = 27.sp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black
+                )
 
-            repeat(3) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .background(RowBackground, RoundedCornerShape(12.dp))
-                        .padding(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    ColorBox(LightBlueBox, Modifier.fillMaxWidth())
-                    ColorBox(DarkBlueBox, Modifier.fillMaxWidth())
-                    ColorBox(LightBlueBox, Modifier.fillMaxWidth())
-                    ColorBox(DarkBlueBox, Modifier.fillMaxWidth())
-                }
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "Steve Jobs",
+                    fontSize = 12.sp,
+                    color = Color.DarkGray
+                )
             }
         }
-    }
-}
 
-@Composable
-fun ColorBox(color: Color, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .height(72.dp)
-            .background(color, RoundedCornerShape(12.dp))
-    )
-}
+        Spacer(modifier = Modifier.weight(1f))
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun AppPreview() {
-    Bai1Theme {
-        AppNavigation()
+        Button(
+            onClick = onBackToRoot,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Blue
+            )
+        ) {
+            Text("BACK TO ROOT")
+        }
     }
 }
